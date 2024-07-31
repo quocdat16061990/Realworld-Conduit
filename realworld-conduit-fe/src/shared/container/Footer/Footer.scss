@@ -1,0 +1,22 @@
+@import '../../../App.scss';
+.footer {
+  background: $bg-footer;
+  margin-top: 3rem;
+  padding: 20px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .container {
+    @include container(1440px);
+    .footer-link {
+      @include typography(16px, 1.5, bold, $primary-color);
+      margin-right: 10px;
+    }
+    .footer-span {
+      &-link {
+        @include typography(13px, 1.5, normal, $link-footer);
+      }
+    }
+  }
+}
