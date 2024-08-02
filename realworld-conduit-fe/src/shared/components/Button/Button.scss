@@ -1,0 +1,18 @@
+@import '../../../App.scss';
+.btn {
+  display: block;
+  margin-top: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  color: $white-color;
+  width: 100%;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  &-sign-in,
+  &-sign-up {
+    background-color: $primary-color;
+    width: 15%;
+  }
+}

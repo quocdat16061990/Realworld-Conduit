@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "avatar" DROP NOT NULL,
+ALTER COLUMN "shortBio" DROP NOT NULL,
+ALTER COLUMN "refreshToken" DROP NOT NULL,
+ALTER COLUMN "refreshTokenExprieTime" DROP NOT NULL;

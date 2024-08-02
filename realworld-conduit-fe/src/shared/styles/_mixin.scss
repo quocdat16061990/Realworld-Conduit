@@ -1,0 +1,15 @@
+@mixin typography(
+  $font-size: $default-font-size,
+  $line-height: $default-line-height,
+  $font-weight: $default-font-weight,
+  $color: $default-color
+) {
+  font-size: $font-size;
+  line-height: $line-height;
+  font-weight: $font-weight;
+  color: $color;
+}
+@mixin container($max-width: 1440px, $margin: 0 auto) {
+  max-width: $max-width;
+  margin: $margin;
+}
