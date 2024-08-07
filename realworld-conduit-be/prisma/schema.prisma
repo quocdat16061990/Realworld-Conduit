@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,18 +8,21 @@ datasource db {
 }
 
 model User {
-  id                     Int       @id @default(autoincrement())
-  email                  String    @unique
-  username               String    @unique
+  id                     Int         @id @default(autoincrement())
+  email                  String      @unique
+  username               String      @unique
   password               String
   avatar                 String?
   shortBio               String?
   refreshToken           String?
   refreshTokenExprieTime DateTime?
-  following              Follow[]  @relation("FollowingRelation")
-  followers              Follow[]  @relation("FollowerRelation")
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @default(now())
+  following              Follow[]    @relation("FollowingRelation")
+  followers              Follow[]    @relation("FollowerRelation")
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @default(now())
+  articles               Article[]   @relation("UserArticles")
+  comments               Comment[]
+  favourites             Favourite[]
 }
 
 model Follow {
@@ -34,4 +31,48 @@ model Follow {
   followerId  Int
   following   User @relation("FollowingRelation", fields: [followingId], references: [id])
   follower    User @relation("FollowerRelation", fields: [followerId], references: [id])
+}
+
+model Article {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String
+  content     String
+  slug        String      @default("")
+  authorId    Int
+  author      User        @relation("UserArticles", fields: [authorId], references: [id])
+  tags        Tag[]
+  comments    Comment[]
+  favourites  Favourite[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Favourite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  article   Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
