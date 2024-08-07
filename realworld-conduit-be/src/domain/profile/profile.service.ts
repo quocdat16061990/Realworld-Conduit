@@ -15,7 +15,6 @@ export class ProfileService {
     const followerUser = await this.databaseService.user.findUnique({
       where: { username: username },
     });
-    console.log('followerUser: ', followerUser);
     if (!followerUser) {
       throw new NotFoundException(`${followerUser} does not exist`);
     }
@@ -35,13 +34,12 @@ export class ProfileService {
   }
   async unFollowUser(data: any, user: User) {
     const { username } = data;
-    console.log('data: ', data);
     const followingUser = await this.databaseService.user.findUnique({
       where: { username: username },
     });
 
     if (user.id === data.id) {
-      throw new ConflictException('You can not follow yourselft');
+      throw new ConflictException('You can not follow your self');
     }
     if (!followingUser) {
       throw new NotFoundException(`${followingUser} does not exist`);

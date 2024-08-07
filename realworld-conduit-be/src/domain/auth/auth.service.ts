@@ -95,7 +95,6 @@ export class AuthService {
   }
   async setCurrentRefreshToken(refreshToken: string, userId: number) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    console.log('currentHashedRefreshToken: ', currentHashedRefreshToken);
     await this.databaseService.user.update({
       where: { id: userId },
       data: { refreshToken: currentHashedRefreshToken },
