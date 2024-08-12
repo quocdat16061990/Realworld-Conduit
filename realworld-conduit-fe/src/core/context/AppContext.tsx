@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 interface AppContextInterface {
   isAuthenticated: boolean
@@ -21,7 +21,15 @@ export const AppProvider = ({
   children: React.ReactNode
   defaultValue?: AppContextInterface
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(defaultValue.isAuthenticated)
+  const initialIsAuthenticated = JSON.parse(localStorage.getItem('isAuthenticated') || 'false')
+
+  useEffect(() => {
+    const storedIsAuthenticated = localStorage.getItem('isAuthenticated')
+    if (storedIsAuthenticated) {
+      setIsAuthenticated(JSON.parse(storedIsAuthenticated))
+    }
+  }, [])
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialIsAuthenticated)
   const reset = () => {
     setIsAuthenticated(false)
   }

@@ -20,7 +20,7 @@ const Header = () => {
     { id: 3, path: path.profile, label: 'Profile' }
   ]
 
-  const currentMenu = isAuthenticated === true ? authMenu : nonAuthMenu
+  const currentMenu = isAuthenticated ? authMenu : nonAuthMenu
 
   return (
     <div className='header'>

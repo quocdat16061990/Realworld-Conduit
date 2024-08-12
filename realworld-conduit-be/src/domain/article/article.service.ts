@@ -111,6 +111,9 @@ export class ArticleService {
       },
       include: {
         author: true,
+        tags: true,
+        favourites: true,
+        comments: true,
       },
     });
     return article;
@@ -160,6 +163,7 @@ export class ArticleService {
   }
 
   async unFavoriteArticle(slug: string, req: RequestWithUser) {
+    //base services findFirst -> han che so luong parameters
     const article = await this.databaseService.article.findFirst({
       where: { slug },
       include: {
@@ -296,7 +300,6 @@ export class ArticleService {
   }
   async getAllInformation() {
     const getAllArticle = await this.databaseService.article.findMany();
-    console.log('getAllArticle: ', getAllArticle);
     return getAllArticle;
   }
 }

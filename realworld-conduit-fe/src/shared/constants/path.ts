@@ -4,6 +4,7 @@ const path = {
   signUp: '/sign-up',
   logout: '/logout',
   article: '/article',
-  profile: '/profile'
+  profile: '/profile',
+  details: '/article-details/:slug'
 } as const
 export default path

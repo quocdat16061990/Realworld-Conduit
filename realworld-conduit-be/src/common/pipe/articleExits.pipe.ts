@@ -16,4 +16,6 @@ export class ArticleExistPipe implements PipeTransform {
 
     return article.id;
   }
+  //pipe -> transform data truoc khi no vao service
+  //ex:
 }

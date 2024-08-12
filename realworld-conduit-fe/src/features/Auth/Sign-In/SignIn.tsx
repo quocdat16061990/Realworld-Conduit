@@ -1,49 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
 import path from 'src/shared/constants/path'
 import './SignIn.scss'
-import { useContext, useState } from 'react'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { AppContext } from 'src/core/context/AppContext'
 import Button from 'src/shared/components/Button'
 import Input from 'src/shared/components/Input/Input'
+import useAuthForm from '../useAuthForm'
 export default function SignIn() {
-  const [formState, setFormState] = useState<any>({
-    email: '',
-    password: ''
-  })
-  const navigate = useNavigate()
-  const { setIsAuthenticated } = useContext(AppContext)
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
-    try {
-      const response = await axios.post(
-        'http://localhost:3010/api/auth/sign-in',
-        {
-          email: formState.email,
-          password: formState.password
-        },
-        {
-          withCredentials: true
-        }
-      )
-      if (response) {
-        toast.success('Login Successfully', {
-          autoClose: 1000
-        })
-        setIsAuthenticated(response.data.isAuthenticated)
-        navigate(path.home)
-      }
-    } catch (error) {}
-  }
-
-  const handleChange = (event: any) => {
-    const { name, value } = event.target
-    setFormState((prevState: any) => ({
-      ...prevState,
-      [name]: value
-    }))
-  }
+  const { formState, handleChange, handleSubmit } = useAuthForm('signIn')
   return (
     <div className='sign-in'>
       <h3 className='heading-3'>Sign In</h3>
