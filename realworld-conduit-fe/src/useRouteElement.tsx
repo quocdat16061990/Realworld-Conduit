@@ -5,6 +5,8 @@ import AuthLayout from './layout/AuthLayout'
 
 import { lazy, Suspense, useContext } from 'react'
 import { AppContext } from './core/context/AppContext'
+import ArticleDetail from './features/Articles/Article'
+import ArticleDetails from './features/Articles/Article-Detail/ArticleDetails'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -17,8 +19,8 @@ function RejectedRoute() {
 
 const SignIn = lazy(() => import('./features/Auth/Sign-In'))
 const SignUp = lazy(() => import('./features/Auth/Sign-Up'))
-const Article = lazy(() => import('./features/Article'))
-const NewArticle = lazy(() => import('./features/Article/New-Article'))
+const Article = lazy(() => import('./features/Articles'))
+const NewArticle = lazy(() => import('./features/Articles/New-Article'))
 const Profile = lazy(() => import('./features/Profile'))
 export default function useRouteElement() {
   const routeElement = useRoutes([
@@ -64,6 +66,7 @@ export default function useRouteElement() {
             </MainLayout>
           )
         },
+
         {
           path: path.profile,
           element: (
@@ -87,6 +90,14 @@ export default function useRouteElement() {
             <Suspense>
               <Article />
             </Suspense>
+          )
+        },
+        {
+          path: path.details,
+          element: (
+              <Suspense>
+                <ArticleDetails />
+              </Suspense>
           )
         }
       ]

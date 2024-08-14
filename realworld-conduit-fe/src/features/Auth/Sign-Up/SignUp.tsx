@@ -1,32 +1,37 @@
 import path from 'src/shared/constants/path'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from 'src/shared/components/Button'
 import './SignUp.scss'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Input from 'src/shared/components/Input/Input'
+import { useMutation } from '@tanstack/react-query'
+import authApi from 'src/core/services/auth.service'
+import { AppContext } from 'src/core/context/AppContext'
 export default function SignUp() {
   const [formState, setFormState] = useState<any>({
     username: '',
     email: '',
     password: ''
   })
-  const handleSubmit = async (event: any) => {
+  const navigate = useNavigate()
+  const signUpMutation = useMutation({
+    mutationFn: (body: any) => authApi.signUp(body),
+    onSuccess: (data: any) => {},
+    onError: (error: any) => {}
+  })
+  const handleSubmit = (event: any) => {
     event.preventDefault()
-    try {
-      const response = await axios.post('http://localhost:3010/api/auth/sign-up', {
-        email: formState.email,
-        username: formState.username,
-        password: formState.password
-      })
-      if (response) {
-        toast.success('Register Successfully')
-      }
-    } catch (error) {
-      console.log('error: ', error)
+    const body: any = {
+      username: formState.username,
+      email: formState.email,
+      password: formState.password
     }
+    signUpMutation.mutate(body)
+    navigate(path.signIn)
   }
+
   const handleChange = (event: any) => {
     const { name, value } = event.target
     setFormState((prevState: any) => ({

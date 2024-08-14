@@ -13,27 +13,27 @@ export class ProfileDto {
   @IsNotEmpty()
   username: string;
 
-  // @ApiProperty({
-  //   description: 'Bio',
-  // })
-  // @MaxLength(20)
-  // @MinLength(4)
-  // @IsString()
-  // @IsNotEmpty()
-  // @IsString()
-  // @IsNotEmpty()
-  // shortBio: string | null;
+  @ApiProperty({
+    description: 'Bio',
+  })
+  @MaxLength(20)
+  @MinLength(4)
+  @IsString()
+  @IsNotEmpty()
+  @IsString()
+  @IsNotEmpty()
+  shortBio: string | null;
 
-  // @ApiProperty({
-  //   description: 'Username',
-  // })
-  // @MaxLength(20)
-  // @MinLength(4)
-  // @IsString()
-  // @IsNotEmpty()
-  // @IsString()
-  // @IsNotEmpty()
-  // avatar: string | null;
+  @ApiProperty({
+    description: 'Username',
+  })
+  @MaxLength(20)
+  @MinLength(4)
+  @IsString()
+  @IsNotEmpty()
+  @IsString()
+  @IsNotEmpty()
+  avatar: string | null;
 
-  // @ApiProperty() following: boolean;
+  @ApiProperty() following: boolean;
 }

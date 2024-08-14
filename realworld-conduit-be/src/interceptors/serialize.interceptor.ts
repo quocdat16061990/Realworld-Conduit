@@ -30,4 +30,7 @@ export class SerializeInterceptor implements NestInterceptor {
       };
     }
   }
+  // bao mat request get post dc goi len sever
+  // parse duw lieu tu form -> json
+  // helmet limit rate
 }
