@@ -32,6 +32,7 @@ export default function SignIn() {
           autoClose: 1000
         })
         setIsAuthenticated(response.data.isAuthenticated)
+        localStorage.setItem('isAuthenticated', response.data.isAuthenticated)
         navigate(path.home)
       }
     } catch (error) {}

@@ -13,3 +13,8 @@
   max-width: $max-width;
   margin: $margin;
 }
+@mixin flex-center-gap( $gap-x: $gap-x, $gap-y: $gap-y) {
+  display: flex;
+  align-items: center;
+  gap: $gap-x $gap-y;
+}

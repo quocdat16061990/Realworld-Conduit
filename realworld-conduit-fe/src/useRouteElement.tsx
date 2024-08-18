@@ -18,8 +18,10 @@ function RejectedRoute() {
 const SignIn = lazy(() => import('./features/Auth/Sign-In'))
 const SignUp = lazy(() => import('./features/Auth/Sign-Up'))
 const Article = lazy(() => import('./features/Article'))
+const ArticleDetail = lazy(() => import('./features/Article/ArticleDetail'))
 const NewArticle = lazy(() => import('./features/Article/New-Article'))
 const Profile = lazy(() => import('./features/Profile'))
+const EditProfile = lazy(() => import('./features/Profile/EditProfile'))
 export default function useRouteElement() {
   const routeElement = useRoutes([
     {
@@ -73,6 +75,16 @@ export default function useRouteElement() {
               </Suspense>
             </MainLayout>
           )
+        },
+        {
+          path: path.editProfile,
+          element: (
+            <MainLayout>
+              <Suspense>
+                <EditProfile />
+              </Suspense>
+            </MainLayout>
+          )
         }
       ]
     },
@@ -86,6 +98,14 @@ export default function useRouteElement() {
           element: (
             <Suspense>
               <Article />
+            </Suspense>
+          )
+        },
+        {
+          path: path.details,
+          element: (
+            <Suspense>
+              <ArticleDetail />
             </Suspense>
           )
         }

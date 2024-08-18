@@ -3,7 +3,7 @@
   display: block;
   margin-top: 16px;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 400;
   color: $white-color;
   width: 100%;
   padding: 12px 24px;
@@ -14,5 +14,87 @@
   &-sign-up {
     background-color: $primary-color;
     width: 15%;
+  }
+  &-delete {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    max-width: 108px;
+    background-color: $gray-color;
+    color: $delete;
+    border-radius: 0.2rem;
+  }
+  &-edit {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    max-width: 108px;
+    background-color: $gray-color;
+    color: $primary-color;
+    border-radius: 0.2rem;
+  }
+  &-comment {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    max-width: 200px;
+    background-color: $primary-color;
+    color: $white-color;
+    border-radius: 0.2rem;
+  }
+  &-follow {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    color: #ccc;
+    background-image: none;
+    background-color: #fff;
+    border-color: #ccc;
+    border: 1px solid transparent;
+    &:hover {
+      color: $delete;
+    }
+  }
+  &-favorite {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    color: $primary-color;
+    background-image: none;
+    background-color: transparent;
+    border-color: $primary-color;
+    background-color: $white-color;
+    border-color: #ccc;
+    border: 1px solid transparent;
+    &:hover {
+      background-color: $primary-color;
+      color: $white-color;
+    }
+  }
+  &-logout {
+    color: #b85c5c;
+    background-image: none;
+    background-color: transparent;
+    border-color: #b85c5c;
+    border: 1px solid #b85c5c;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    &:hover {
+      background-color: #b85c5c;
+      color: #fff;
+      transition: 0.3s ease;
+    }
   }
 }

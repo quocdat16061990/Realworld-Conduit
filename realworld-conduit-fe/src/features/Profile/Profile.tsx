@@ -1,49 +1,70 @@
 import React, { useState } from 'react'
 import './Profile.scss'
 import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
+import authApi from 'src/core/services/auth.service'
+import Tabs from 'src/shared/components/Tabs/Tabs'
+import Post from '../Article/Post'
+import { Link, useNavigate } from 'react-router-dom'
+import path from 'src/shared/constants/path'
+import Button from 'src/shared/components/Button'
+import articlesApi from 'src/core/services/article.service'
+import Articles from '../Article/Articles/Articles'
 const Profile = () => {
-  const [formState, setFormState] = useState<any>({
-    url: '',
-    username: '',
-    bio: '',
-    email: '',
-    password: ''
+  const {
+    status: userStatus,
+    data: userData,
+    error: userError
+  } = useQuery({
+    queryKey: ['getCurrentUser'],
+    queryFn: authApi.getCurrentUser
   })
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
-  }
-  const handleChange = (event: any) => {
-    const { name, value } = event.target
-    setFormState((prevState: any) => ({
-      ...prevState,
-      [name]: value
-    }))
-  }
-
-  const formFields = [
-    { name: 'url', type: 'text', placeholder: 'Article Title' },
-    { name: 'username', type: 'text', placeholder: 'URL Profile your picture' },
-    { name: 'bio', type: 'textarea', placeholder: 'Short bio about you' },
-    { name: 'email', type: 'text', placeholder: 'Email' },
-    { name: 'password', type: 'password', placeholder: 'Password' }
+  console.log('userData: ', userData)
+  const {
+    status: articlesStatus,
+    data: articleData,
+    error: articlesError
+  } = useQuery({
+    queryKey: ['articles'],
+    queryFn: () => articlesApi.articles({}),
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 5
+  })
+  const navigate = useNavigate()
+  const yourArticles = articleData?.data?.enhancedArticles.filter(
+    (item: any) => item.author.username === userData?.data?.data?.username
+  )
+  const favoriteArticles = articleData?.data?.enhancedArticles.filter((item: any) => item.favorite === true)
+  const tabsData = [
+    {
+      title: 'Your Article',
+      content: <Articles articles={yourArticles} />
+    },
+    {
+      title: 'Favorites Article',
+      content: <Articles articles={favoriteArticles} />
+    }
   ]
+  const handleEditProfile = (id: number) => {
+    console.log('id: ', id)
+    navigate(`/profile/:${id}`)
+  }
   return (
     <div className='profile'>
-      <form className='form' onSubmit={handleSubmit}>
-        {formFields.map((field) => (
-          <input
-            key={field.name}
-            type={field.type}
-            name={field.name}
-            value={formState[field.name]}
-            onChange={handleChange}
-            placeholder={field.placeholder}
-          />
-        ))}
-        <div className='btn'>
-          <button>Publish Article</button>
+      <div className='profile-info'>
+        <div className='profile-top'>
+          <div>
+            <img src='https://api.realworld.io/images/smiley-cyrus.jpeg' alt='avatar' />
+          </div>
+          <h4>Quoc Dat</h4>
         </div>
-      </form>
+        <Button type='button' className=' btn-sign-up' onClick={() => handleEditProfile(userData?.data?.data?.id)}>
+          Edit Your Profile
+        </Button>
+      </div>
+      <div className='profile-content'>
+        <Tabs tabs={tabsData} />
+      </div>
     </div>
   )
 }
