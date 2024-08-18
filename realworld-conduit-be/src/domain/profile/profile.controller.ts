@@ -1,55 +1,74 @@
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
   Post,
-  UseGuards,
   UseInterceptors,
+  UseGuards,
+  Param,
+  Delete,
+  Req,
+  Patch,
+  Body,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { ApiOperationDecorator } from 'src/common/decorator/api-operation.decorator';
-import { ProfileDto } from './dto/profile.dto';
-import JwtAuthenticationGuard from '../auth/jwt-authentication.guard';
-import { ProfileService } from './profile.service';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { UserReq } from 'src/common/decorator/user.decorator';
 import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import JwtAuthenticationGuard from '../auth/jwt-authentication.guard';
+import { ProfileService } from './profile.service';
+import RequestWithUser from '../auth/requestWithUser.interface';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @ApiTags('Profiles')
 @Controller('profiles')
 export class ProfileController {
   constructor(private profileService: ProfileService) {}
-  // @ApiOperationDecorator({
-  //   type: ProfileDto,
-  //   summary: 'Get a profile',
-  //   description: 'Get a profile',
-  // })
-  // @Get(':username')
-  // async getProfileUser(@Body() username: ProfileDto) {
-  //   return username;
-  // }
 
-  @ApiOperationDecorator({
-    type: ProfileDto,
-    summary: 'Follow',
-    description: 'Follow',
+  @ApiOperation({
+    summary: 'Follow a user',
+    description: 'Follow a user by username',
   })
-  @Post('/follow')
+  @ApiParam({
+    name: 'username',
+    description: 'Username of the profile you want to follow',
+    type: 'string',
+    required: true,
+  })
+  @Post('/:username/follow')
   @UseInterceptors(SerializeInterceptor)
   @UseGuards(JwtAuthenticationGuard)
-  async followUser(@UserReq() user: any, @Body() username: ProfileDto) {
+  async followUser(
+    @Req() user: RequestWithUser,
+    @Param('username') username: string,
+  ) {
     return this.profileService.followUser(username, user);
   }
 
-  @ApiOperationDecorator({
-    type: ProfileDto,
-    summary: 'Follow',
-    description: 'Follow',
+  @ApiOperation({
+    summary: 'Unfollow a user',
+    description: 'Unfollow a user by username',
   })
-  @Delete('/follow')
+  @ApiParam({
+    name: 'username',
+    description: 'Username of the profile you want to unfollow',
+    type: 'string',
+    required: true,
+  })
+  @Delete('/:username/unfollow')
   @UseInterceptors(SerializeInterceptor)
   @UseGuards(JwtAuthenticationGuard)
-  async unFollowUser(@UserReq() user: any, @Body() username: ProfileDto) {
+  async unfollowUser(
+    @Req() user: RequestWithUser,
+    @Param('username') username: string,
+  ) {
     return this.profileService.unFollowUser(username, user);
+  }
+
+  @Patch('/:username/update-profile')
+  @UseInterceptors(SerializeInterceptor)
+  @UseGuards(JwtAuthenticationGuard)
+  async updateProfile(
+    @Param('email') email: string,
+    @Body() updateProfile: UpdateProfileDto,
+  ) {
+    return this.profileService.updateProfile(email, updateProfile);
   }
 }

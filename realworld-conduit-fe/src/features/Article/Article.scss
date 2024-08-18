@@ -1,8 +1,16 @@
 .posts {
+  max-width: 1440px;
+  margin: 0 auto;
   margin-top: 20px;
   .post {
     display: flex;
     gap: 0 20px;
     align-items: baseline;
+  }
+  .tabs-container {
+    width: 70%;
+  }
+  .tags {
+    width: 30%;
   }
 }

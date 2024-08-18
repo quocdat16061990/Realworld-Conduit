@@ -6,22 +6,30 @@ import {
 import { DatabaseService } from 'src/database/database.service';
 import { ProfileDto } from './dto/profile.dto';
 import { Prisma, User } from '@prisma/client';
+import RequestWithUser from '../auth/requestWithUser.interface';
+import { BaseService } from 'src/common/service/base.service';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
-export class ProfileService {
-  constructor(private databaseService: DatabaseService) {}
-  async followUser(data: any, user: User) {
-    const { username } = data;
+export class ProfileService extends BaseService<any, any> {
+  constructor(
+    databaseService: DatabaseService,
+    private authService: AuthService,
+  ) {
+    super(databaseService, 'user');
+  }
+  async followUser(username: string, user: RequestWithUser) {
     const followerUser = await this.databaseService.user.findUnique({
-      where: { username: username },
+      where: { username },
     });
-    console.log('followerUser: ', followerUser);
     if (!followerUser) {
       throw new NotFoundException(`${followerUser} does not exist`);
     }
+
     await this.databaseService.follow.create({
       data: {
-        followingId: user.id,
+        followingId: user?.user?.id,
         followerId: followerUser.id,
       },
     });
@@ -30,26 +38,18 @@ export class ProfileService {
       email: followerUser.email,
       bio: followerUser.shortBio,
       image: followerUser.avatar,
+      following: user?.user?.id,
       isFollowed: true,
     };
   }
-  async unFollowUser(data: any, user: User) {
-    const { username } = data;
-    console.log('data: ', data);
+  async unFollowUser(username: string, user: RequestWithUser) {
     const followingUser = await this.databaseService.user.findUnique({
       where: { username: username },
     });
 
-    if (user.id === data.id) {
-      throw new ConflictException('You can not follow yourselft');
-    }
-    if (!followingUser) {
-      throw new NotFoundException(`${followingUser} does not exist`);
-    }
-
     await this.databaseService.follow.deleteMany({
       where: {
-        followingId: user.id,
+        followingId: user?.user?.id,
         followerId: followingUser.id,
       },
     });
@@ -60,5 +60,33 @@ export class ProfileService {
       image: followingUser.avatar,
       isFollowed: false,
     };
+  }
+  async updateProfile(email: string, data: UpdateProfileDto) {
+    const { avatar, username, shortBio, password, ...otherData } = data;
+
+    const userProfile = await this.authService.getByEmail(email);
+    if (!userProfile) {
+      throw new NotFoundException('User not found');
+    }
+
+    let updateData: Prisma.UserUpdateInput = { ...otherData };
+
+    if (username !== undefined) {
+      updateData.username = username;
+    }
+    if (shortBio !== undefined) {
+      updateData.shortBio = shortBio;
+    }
+    if (avatar !== undefined) {
+      updateData.avatar = avatar;
+    }
+    if (password !== undefined) {
+      updateData.password = await this.authService.hashPassword(password);
+    }
+
+    return await this.databaseService.user.update({
+      where: { email },
+      data: updateData,
+    });
   }
 }

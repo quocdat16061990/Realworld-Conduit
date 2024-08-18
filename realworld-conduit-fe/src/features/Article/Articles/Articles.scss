@@ -1,0 +1,93 @@
+.article-detail {
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  .article-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .article-info {
+      display: flex;
+      gap: 0 10px;
+      align-items: center;
+      .article-avatar {
+        .image {
+          width: 30px;
+          height: 30px;
+          border-radius: 30px;
+        }
+      }
+      &-user {
+        .name {
+          color: #5cb85c;
+          display: block;
+        }
+        .date {
+          color: #bbb;
+          font-size: 12px;
+        }
+      }
+    }
+    .article-follow {
+      svg {
+        color: #5cb85c;
+        &:hover {
+          color: white;
+        }
+      }
+      button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        padding: 5px;
+        background-color: white;
+        border: 1px solid #5cb85c;
+        border-radius: 4px;
+        color: #5cb85c;
+        cursor: pointer;
+        &:hover {
+          background-color: #5cb85c;
+          color: white;
+        }
+      }
+    }
+  }
+  .article-content {
+    .title {
+      margin: 10px 0;
+      font-size: 24px;
+      font-weight: bold;
+      color: #373a3c;
+    }
+    .desc {
+      font-size: 16px;
+      margin: 10px 0;
+      font-weight: normal;
+      color: #999999;
+    }
+  }
+  .article-tags {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .read-more {
+      font-size: 12px;
+      color: #bbbb;
+      font-weight: normal;
+      cursor: pointer;
+    }
+    .tagList {
+      display: flex;
+      gap: 0 5px;
+      &-item {
+        padding: 5px;
+        margin: 4px;
+        font-size: 15px;
+        color: #aaaaaa;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+}

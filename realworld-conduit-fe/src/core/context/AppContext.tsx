@@ -21,7 +21,10 @@ export const AppProvider = ({
   children: React.ReactNode
   defaultValue?: AppContextInterface
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(defaultValue.isAuthenticated)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    const savedAuth = localStorage.getItem('isAuthenticated')
+    return savedAuth === 'true' || defaultValue.isAuthenticated
+  })
   const reset = () => {
     setIsAuthenticated(false)
   }

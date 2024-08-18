@@ -73,6 +73,7 @@ export class AuthService {
     try {
       const user = await this.getByEmail(email);
       await this.comparePassword(plainTextPassword, user.password);
+      console.log('user: ', user);
       return user;
     } catch (error) {
       throw new HttpException(
