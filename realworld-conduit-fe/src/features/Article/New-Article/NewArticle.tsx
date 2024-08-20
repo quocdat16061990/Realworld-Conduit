@@ -7,16 +7,10 @@ import Input from 'src/shared/components/Input/Input'
 import Button from 'src/shared/components/Button'
 import { useNavigate } from 'react-router-dom'
 import path from 'src/shared/constants/path'
-
-interface FormState {
-  title: string
-  description: string
-  content: string
-  tags: string[]
-}
+import { CreateArticleRequest } from 'src/shared/types/article.type'
 
 const NewArticle = () => {
-  const [formState, setFormState] = useState<FormState>({
+  const [formState, setFormState] = useState<CreateArticleRequest>({
     title: '',
     description: '',
     content: '',
@@ -45,7 +39,7 @@ const NewArticle = () => {
   }
 
   const createArticleMutation = useMutation({
-    mutationFn: (body: FormState) => articlesApi.createNewArticles(body),
+    mutationFn: (body: CreateArticleRequest) => articlesApi.createNewArticles(body),
     onSuccess: () => {
       toast.success('Create Articles Successfully')
       setFormState({ title: '', description: '', content: '', tags: [] })

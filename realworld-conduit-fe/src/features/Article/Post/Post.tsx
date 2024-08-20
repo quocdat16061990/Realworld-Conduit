@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import './Post.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import favoriteApi from 'src/core/services/favorite.service'
+import articlesApi from 'src/core/services/article.service'
+import commentApi from 'src/core/services/comment.service'
 const Post = ({ data }: any) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const handleClickArticle = (slug: string) => {
     navigate(`/article-detail/:${slug}`)
   }
+
   const favoriteMutation = useMutation({
     mutationFn: (slug: string) => favoriteApi.favoriteArticle(slug),
     onSuccess: () => {

@@ -3,128 +3,24 @@ import './ArticleDetail.scss'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import path from 'src/shared/constants/path'
 import Button from 'src/shared/components/Button'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import articlesApi from 'src/core/services/article.service'
-import authApi from 'src/core/services/auth.service'
-import { toast } from 'react-toastify'
-import profileApi from 'src/core/services/profile.services'
-import commentApi from 'src/core/services/comment.service'
-import favoriteApi from 'src/core/services/favorite.service'
+
+import { useArticleDetail } from './useArticleDetails'
 const ArticleDetail = () => {
-  const { slug } = useParams()
-  const newSlug = slug?.substring(1)
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-  const [formState, setFormState] = useState<{ content: string }>({
-    content: ''
-  })
   const {
-    data: articleData,
-    isLoading: articleLoading,
-    error: articleError
-  } = useQuery({
-    queryKey: ['articles', slug],
-    queryFn: () => articlesApi.getArticleBySlug(newSlug as string)
-  })
-  const {
-    data: userData,
-    isLoading: userLoading,
-    error: userError
-  } = useQuery({
-    queryKey: ['getCurrentUser'],
-    queryFn: () => authApi.getCurrentUser()
-  })
-  const favoriteMutation = useMutation({
-    mutationFn: (slug: string) => favoriteApi.favoriteArticle(slug),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['articles'] })
-    }
-  })
-  const unfavoriteMutation = useMutation({
-    mutationFn: (slug: string) => favoriteApi.unFavoriteArticle(slug),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['articles'] })
-    }
-  })
-  const { data: commentsData, isLoading: commentsLoading } = useQuery({
-    queryKey: ['comments', slug],
-    queryFn: () => commentApi.getComment(newSlug as string),
-    enabled: !!slug
-  })
-
-  const followMutation = useMutation({
-    mutationFn: (username: string) => profileApi.follow(username),
-    onSuccess: () => {
-      toast.success('Followed successfully!')
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to follow user')
-    }
-  })
-  const comment = commentsData?.data?.comments
-
-  const createCommentMutation = useMutation({
-    mutationFn: (content: string) => commentApi.createComment(newSlug as string, content),
-    onSuccess: () => {
-      toast.success('Comment posted successfully!')
-      queryClient.invalidateQueries({ queryKey: ['comments', slug] })
-      setFormState({ content: '' })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to post comment')
-    }
-  })
-  const deleteCommentMutation = useMutation({
-    mutationFn: (commentId: number) => commentApi.deleteComment(newSlug as string, commentId),
-    onSuccess: (data: any) => {
-      toast.success(data?.data?.message)
-      queryClient.invalidateQueries({ queryKey: ['comments', slug] })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to delete comment')
-    }
-  })
-  const deleteArticle = useMutation({
-    mutationFn: (slug: string) => articlesApi.deleteArticle(newSlug as string),
-    onSuccess: () => {
-      toast.success('Delete Article Successfully')
-      navigate(path.home)
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to delete comment')
-    }
-  })
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = event.target
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value
-    }))
-  }
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    if (userData) {
-      createCommentMutation.mutate(formState.content)
-    }
-  }
-  const handleDeleteComment = (id: number) => {
-    deleteCommentMutation.mutate(id)
-  }
-  const handleEditArticle = (id: number) => {}
-  const handleDeleteArticle = (slug: string) => {
-    deleteArticle.mutate(slug)
-  }
-  const handleFollowArticle = (username: string) => {
-    followMutation.mutate(username)
-  }
-  const handleFavoriteArticle = (slug: string, favorite: any) => {
-    if (favorite.length === 0) {
-      favoriteMutation.mutate(slug)
-    } else {
-      unfavoriteMutation.mutate(slug)
-    }
-  }
+    articleData,
+    commentsData,
+    formState,
+    userData,
+    handleChange,
+    handleDeleteArticle,
+    handleDeleteComment,
+    handleEditArticle,
+    handleFavoriteArticle,
+    handleFollowArticle,
+    handleSubmit
+  } = useArticleDetail()
+  const comment = commentsData?.data
+  console.log('articleData: ', articleData?.data?.author?.username)
   return (
     <div className='article-detail'>
       <div className='article-detail-banner'>
@@ -165,10 +61,10 @@ const ArticleDetail = () => {
                   type='button'
                   className='btn btn-favorite'
                   onClick={() =>
-                    handleFavoriteArticle(articleData?.data?.slug as string, articleData?.data?.favourites)
+                    handleFavoriteArticle(articleData?.data?.slug as string, articleData?.data?.favoritesCount)
                   }
                 >
-                  ({articleData?.data?.favourites.length || 0}) Favorite Article
+                  ({articleData?.data?.favoritesCount || 0}) Favorite Article
                 </Button>
               </div>
             )}
@@ -193,7 +89,7 @@ const ArticleDetail = () => {
             <div className='article-meta'>
               <div className='info'>
                 <Link className='author' to={path.home}>
-                  {userData?.data?.data?.username}
+                  {articleData?.data?.author?.username}
                 </Link>
                 <span className='date'>August 12, 2024</span>
               </div>
@@ -229,10 +125,10 @@ const ArticleDetail = () => {
                     type='button'
                     className='btn btn-favorite'
                     onClick={() =>
-                      handleFavoriteArticle(articleData?.data?.slug as string, articleData?.data?.favourites)
+                      handleFavoriteArticle(articleData?.data?.slug as string, articleData?.data?.favoritesCount)
                     }
                   >
-                    {articleData?.data?.favourites.length || 0} Favorite Article
+                    {articleData?.data?.favoritesCount || 0} Favorite Article
                   </Button>
                 </div>
               )}

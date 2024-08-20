@@ -1,17 +1,5 @@
-export interface Author {
-  shortBio: string | null
-  avatar: string | null
-  username: string
-  createdAt?: string
-  updateAt?: string
-}
-
-export interface Tag {
-  id: number
-  name: string
-  createdAt: string
-  updatedAt: string
-}
+import { Author } from './author.type'
+import { Tag } from './tag.type'
 
 export interface Article {
   id: number
@@ -21,12 +9,18 @@ export interface Article {
   description: string
   favorite: boolean
   favoritesCount: number
-  favourites?: any
   slug: string
   tags: Tag[]
   createdAt: string
   updatedAt: string
 }
+export interface CreateArticleRequest {
+  title: string
+  description: string
+  content: string
+  tags: string[]
+}
+
 export interface ArticleResponse {
   enhancedArticles: Article[]
   articlesCount: number

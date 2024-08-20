@@ -132,7 +132,6 @@ export class ArticleService extends BaseService<any, any> {
   }
   async getArticleBySlug(slug: string) {
     const article = await this.findArticle(slug);
-    console.log('articles: ', article.favourites);
     const isFavorited = article.favourites.some((fav) => fav.userId);
 
     return {
