@@ -1,20 +1,17 @@
 import axios from 'axios'
-export const URL_COMMENT = 'http://localhost:3010/api/comment'
+import { axiosInstance } from './http.services'
+import { Comment, DeleteCommentResponse } from 'src/shared/types/comment.type'
 const commentApi = {
   createComment(slug: string, content: any) {
-    return axios.post<any>(
-      `${URL_COMMENT}/${slug}/comment`,
-      {
-        content
-      },
-      { withCredentials: true }
-    )
+    return axiosInstance.post<any>(`/comment/${slug}/comment`, {
+      content
+    })
   },
   getComment(slug: string) {
-    return axios.get<any>(`${URL_COMMENT}/${slug}/comment`, { withCredentials: true })
+    return axiosInstance.get<Comment[]>(`/comment/${slug}/comment`)
   },
   deleteComment(slug: string, id: number) {
-    return axios.delete<any>(`${URL_COMMENT}/${slug}/comment/${id}`, { withCredentials: true })
+    return axiosInstance.delete<DeleteCommentResponse>(`/comment/${slug}/comment/${id}`)
   }
 }
 export default commentApi

@@ -1,22 +1,19 @@
 import axios from 'axios'
 export const URL_ARTICLES = 'http://localhost:3010/api/articles'
 import { Article, ArticleDetailResponse, ArticleResponse, QueryParams } from 'src/shared/types/article.type'
+import { axiosInstance } from './http.services'
 const articlesApi = {
   articles(params: QueryParams) {
-    return axios.get<ArticleResponse>(URL_ARTICLES, {
-      params,
-      withCredentials: true
-    })
+    return axiosInstance.get<ArticleResponse>('/articles', { params, headers: { 'No-Credentials': 'true' } })
   },
   createNewArticles(body: any) {
-    return axios.post<any>(`${URL_ARTICLES}/articles`, body, { withCredentials: true })
+    return axiosInstance.post<any>('/articles', body)
   },
   getArticleBySlug(slug: string) {
-    return axios.get<Article>(`${URL_ARTICLES}/${slug}`, { withCredentials: true })
+    return axiosInstance.get<Article>(`/articles/${slug}`)
   },
-
   deleteArticle(slug: string) {
-    return axios.delete<any>(`${URL_ARTICLES}/articles/${slug}`, { withCredentials: true })
+    return axiosInstance.delete<any>(`/articles/${slug}`)
   }
 }
 export default articlesApi

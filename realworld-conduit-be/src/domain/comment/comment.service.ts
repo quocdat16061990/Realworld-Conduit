@@ -30,17 +30,49 @@ export class CommentService extends BaseService<any, any> {
         connect: { id: article.id },
       },
     };
-    return this.databaseService.comment.create({
+    const result = await this.databaseService.comment.create({
       data: newComment,
       include: {
         user: true,
       },
     });
+    const newResult = structuredClone(result);
+    const updateComment = {
+      id: newResult.id,
+      content: newResult.content,
+      createdAt: newResult.createdAt,
+      updatedAt: newResult.updatedAt,
+      author: {
+        id: newResult.user.id,
+        email: newResult.user.email,
+        username: newResult.user.username,
+      },
+    };
+    return updateComment;
   }
   async getComment(slug: string, req: RequestWithUser) {
-    const article = await this.articleService.findArticle(slug);
-    if (!article) throw new NotFoundException('Article does not exits');
-    return article;
+    const comments = await this.databaseService.comment.findMany({
+      where: {
+        article: {
+          slug,
+        },
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return comments;
   }
   async deleteComment(slug: string, commentId: number, req: RequestWithUser) {
     const comment = await this.databaseService.comment.findFirst({
@@ -48,6 +80,19 @@ export class CommentService extends BaseService<any, any> {
         id: commentId,
         article: {
           slug,
+        },
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            username: true,
+          },
         },
       },
     });

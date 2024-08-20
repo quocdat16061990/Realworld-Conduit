@@ -1,16 +1,14 @@
-import axios from 'axios'
-
-export const URL_PROFILE = 'http://localhost:3010/api/profiles'
+import { axiosInstance } from './http.services'
 
 const profileApi = {
   follow(username: string) {
-    return axios.post(`${URL_PROFILE}/${username}/follow`, {}, { withCredentials: true })
+    return axiosInstance.post<any>(`profiles/${username}/follow`, {})
   },
   unfollow(username: string) {
-    return axios.post(`${URL_PROFILE}/${username}/unfollow`, {}, { withCredentials: true })
+    return axiosInstance.delete(`profiles/${username}/unfollow`, {})
   },
   updateProfile(username: string, data: any) {
-    return axios.put<any>(`${URL_PROFILE}/${username}/update-profile`, data, { withCredentials: true })
+    return axiosInstance.put<any>(`profiles/${username}/update-profile`, data)
   }
 }
 

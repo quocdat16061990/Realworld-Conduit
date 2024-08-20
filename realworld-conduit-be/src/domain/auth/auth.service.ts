@@ -73,7 +73,6 @@ export class AuthService {
     try {
       const user = await this.getByEmail(email);
       await this.comparePassword(plainTextPassword, user.password);
-      console.log('user: ', user);
       return user;
     } catch (error) {
       throw new HttpException(
@@ -96,7 +95,6 @@ export class AuthService {
   }
   async setCurrentRefreshToken(refreshToken: string, userId: number) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    console.log('currentHashedRefreshToken: ', currentHashedRefreshToken);
     await this.databaseService.user.update({
       where: { id: userId },
       data: { refreshToken: currentHashedRefreshToken },
