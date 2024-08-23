@@ -45,17 +45,7 @@ export const useArticleDetail = () => {
   const favoriteMutation = useMutation({
     mutationFn: (slug: string) => favoriteApi.favoriteArticle(slug),
     onSuccess: (data, slug) => {
-      queryClient.setQueryData(['articles', slug], (oldData: any) => {
-        console.log('oldDataa: ', oldData)
-        if (oldData) {
-          return {
-            ...oldData,
-            favortiesCount: oldData.favortiesCount + 1,
-            favourites: true
-          }
-        }
-        return oldData
-      })
+      queryClient.invalidateQueries({ queryKey: ['articles'] })
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to favorite article')
@@ -64,16 +54,7 @@ export const useArticleDetail = () => {
   const unfavoriteMutation = useMutation({
     mutationFn: (slug: string) => favoriteApi.unFavoriteArticle(slug),
     onSuccess: (data, slug) => {
-      queryClient.setQueryData(['articles', slug], (oldData: any) => {
-        if (oldData) {
-          return {
-            ...oldData,
-            favortiesCount: oldData.favortiesCount - 1,
-            favourites: false
-          }
-        }
-        return oldData
-      })
+      queryClient.invalidateQueries({ queryKey: ['articles'] })
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to unfavorite article')
