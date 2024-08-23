@@ -21,12 +21,7 @@ export class SerializeInterceptor implements NestInterceptor {
     if (response instanceof Object) {
       return {
         status: 200,
-        data: _.omit(
-          response,
-          'password',
-          'refreshToken',
-          'refreshTokenExprieTime',
-        ),
+        data: _.omit(response, 'refreshToken', 'refreshTokenExprieTime'),
       };
     }
   }

@@ -19,6 +19,7 @@ export interface CurrenUserResponse {
   status: number
 }
 export interface Profile {
+  password: string
   id: number
   email: string
   username: string

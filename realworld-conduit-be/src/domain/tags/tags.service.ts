@@ -41,7 +41,6 @@ export class TagsService extends BaseService<any, any> {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice(0, 10);
 
-    console.log('Newest Tags: ', tags);
 
     return tags;
   }

@@ -30,7 +30,6 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     // Xử lý lỗi chung
     if (error.response) {
-      console.log('error: ', error)
       switch (error.response.status) {
         case 401:
           // Xử lý lỗi unauthorized

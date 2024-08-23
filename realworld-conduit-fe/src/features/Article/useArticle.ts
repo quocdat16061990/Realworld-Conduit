@@ -26,7 +26,6 @@ export function useArticles(selectedTag: string | null) {
   })
 
   const handleTagClick = (tag: string) => {
-    console.log('tag: ', tag)
     const cachedData = queryClient.getQueryData(['articles', tag])
     if (cachedData) {
       queryClient.setQueryData(['articles', tag], cachedData)
@@ -34,7 +33,7 @@ export function useArticles(selectedTag: string | null) {
       queryClient.invalidateQueries({ queryKey: ['articles', tag] })
     }
   }
-  
+
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
 
   return {

@@ -26,7 +26,7 @@ const NewArticle = () => {
     const { name, value } = event.target
     if (name === 'tags') {
       const tagsArray = value.split(',').map((tag) => tag.trim())
-      setFormState((prevState) => ({
+      setFormState((prevState: any) => ({
         ...prevState,
         [name]: tagsArray
       }))
@@ -71,7 +71,7 @@ const NewArticle = () => {
         <Input
           type='text'
           name='tags'
-          value={formState.tags.join(',')}
+          value={formState.tags?.join(',')}
           onChange={handleChange}
           placeholder='Enter Tags'
         />

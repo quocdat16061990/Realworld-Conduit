@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { axiosInstance } from './http.services'
 
 const profileApi = {
@@ -7,8 +8,11 @@ const profileApi = {
   unfollow(username: string) {
     return axiosInstance.delete(`profiles/${username}/unfollow`, {})
   },
-  updateProfile(username: string, data: any) {
-    return axiosInstance.put<any>(`profiles/${username}/update-profile`, data)
+  updateProfile(email: string, data: any) {
+    return axiosInstance.patch<any>(`profiles/${encodeURIComponent(email)}/update-profile`, data)
+  },
+  getProfile() {
+    return axiosInstance.get<any>(`profiles/profile`)
   }
 }
 

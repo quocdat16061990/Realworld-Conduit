@@ -14,18 +14,21 @@ datasource db {
 }
 
 model User {
-  id                     Int       @id @default(autoincrement())
-  email                  String    @unique
-  username               String    @unique
+  id                     Int         @id @default(autoincrement())
+  email                  String      @unique
+  username               String      @unique
   password               String
   avatar                 String?
   shortBio               String?
   refreshToken           String?
   refreshTokenExprieTime DateTime?
-  following              Follow[]  @relation("FollowingRelation")
-  followers              Follow[]  @relation("FollowerRelation")
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @default(now())
+  following              Follow[]    @relation("FollowingRelation")
+  followers              Follow[]    @relation("FollowerRelation")
+  articles               Article[]   @relation("UserArticles") // Thêm dòng này
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @default(now())
+  Comment                Comment[]
+  Favourite              Favourite[]
 }
 
 model Follow {

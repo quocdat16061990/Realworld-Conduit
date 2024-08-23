@@ -23,16 +23,19 @@ export const useArticleDetail = () => {
     error: articleError
   } = useQuery({
     queryKey: ['articles', slug],
-    queryFn: () => articlesApi.getArticleBySlug(newSlug as string)
+    queryFn: () => articlesApi.getArticleBySlug(newSlug as string),
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 5
   })
   const {
     data: userData,
     isLoading: userLoading,
     error: userError
   } = useQuery({
-    queryKey: ['getCurrentUser'],
-    queryFn: () => authApi.getCurrentUser()
+    queryKey: ['getProfile'],
+    queryFn: () => profileApi.getProfile()
   })
+
   const { data: commentsData, isLoading: commentsLoading } = useQuery({
     queryKey: ['comments', slug],
     queryFn: () => commentApi.getComment(newSlug as string),
@@ -41,28 +44,62 @@ export const useArticleDetail = () => {
 
   const favoriteMutation = useMutation({
     mutationFn: (slug: string) => favoriteApi.favoriteArticle(slug),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['articles'] })
+    onSuccess: (data, slug) => {
+      queryClient.setQueryData(['articles', slug], (oldData: any) => {
+        console.log('oldDataa: ', oldData)
+        if (oldData) {
+          return {
+            ...oldData,
+            favortiesCount: oldData.favortiesCount + 1,
+            favourites: true
+          }
+        }
+        return oldData
+      })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to favorite article')
     }
   })
   const unfavoriteMutation = useMutation({
     mutationFn: (slug: string) => favoriteApi.unFavoriteArticle(slug),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['articles'] })
+    onSuccess: (data, slug) => {
+      queryClient.setQueryData(['articles', slug], (oldData: any) => {
+        if (oldData) {
+          return {
+            ...oldData,
+            favortiesCount: oldData.favortiesCount - 1,
+            favourites: false
+          }
+        }
+        return oldData
+      })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to unfavorite article')
     }
   })
 
   const followMutation = useMutation({
     mutationFn: (username: string) => profileApi.follow(username),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getProfile'] })
       toast.success('Followed successfully!')
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to follow user')
     }
   })
-  const comment = commentsData?.data
-  console.log('comment: ', comment)
+  const unFollowMutation = useMutation({
+    mutationFn: (username: string) => profileApi.unfollow(username),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['getProfile'] })
+      toast.success('UnFollow successfully!')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to Unfollow user')
+    }
+  })
   const createCommentMutation = useMutation({
     mutationFn: (content: string) => commentApi.createComment(newSlug as string, content),
     onSuccess: () => {
@@ -85,7 +122,7 @@ export const useArticleDetail = () => {
     }
   })
   const deleteArticle = useMutation({
-    mutationFn: (slug: string) => articlesApi.deleteArticle(newSlug as string),
+    mutationFn: (newSlug: string) => articlesApi.deleteArticle(newSlug as string),
     onSuccess: () => {
       toast.success('Delete Article Successfully')
       navigate(path.home)
@@ -111,15 +148,21 @@ export const useArticleDetail = () => {
   const handleDeleteComment = (id: number) => {
     deleteCommentMutation.mutate(id)
   }
-  const handleEditArticle = (id: number) => {}
+  const handleEditArticle = (slug: number) => {
+    navigate(`/article/:${slug}`)
+  }
   const handleDeleteArticle = (slug: string) => {
     deleteArticle.mutate(slug)
   }
-  const handleFollowArticle = (username: string) => {
-    followMutation.mutate(username)
+  const handleFollowArticle = (username: string, follow: boolean) => {
+    if (follow) {
+      unFollowMutation.mutate(username)
+    } else {
+      followMutation.mutate(username)
+    }
   }
-  const handleFavoriteArticle = (slug: string, favorite: any) => {
-    if (favorite.length === 0) {
+  const handleFavoriteArticle = (slug: string, favorite: boolean) => {
+    if (!favorite) {
       favoriteMutation.mutate(slug)
     } else {
       unfavoriteMutation.mutate(slug)

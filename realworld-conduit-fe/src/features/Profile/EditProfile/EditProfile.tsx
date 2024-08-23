@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import './EditProfile.scss'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
-import articlesApi from 'src/core/services/article.service'
 import Input from 'src/shared/components/Input/Input'
 import Button from 'src/shared/components/Button'
 import { useNavigate } from 'react-router-dom'
@@ -35,8 +34,20 @@ const EditProfile = () => {
     queryKey: ['getCurrentUser'],
     queryFn: authApi.getCurrentUser
   })
+  useEffect(() => {
+    if (userData?.data?.data) {
+      setFormState({
+        avatar: userData?.data?.data?.avatar || '',
+        username: userData?.data?.data?.username || '',
+        shortBio: userData?.data?.data?.shortBio || '',
+        email: userData?.data?.data?.email || '',
+        password: ''
+      })
+    }
+  }, [userData?.data?.data])
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+    console.log('formState: ', formState)
     updateProfileMutation.mutate(formState)
   }
 
@@ -49,7 +60,7 @@ const EditProfile = () => {
   }
 
   const updateProfileMutation = useMutation({
-    mutationFn: (body: FormState) => profileApi.updateProfile(userData?.data?.data?.email, body),
+    mutationFn: (body: FormState) => profileApi.updateProfile(userData?.data?.data?.email as any, body),
     onSuccess: () => {
       toast.success('Update Profile Successfully')
       setFormState({ avatar: '', username: '', shortBio: '', email: '', password: '' })
