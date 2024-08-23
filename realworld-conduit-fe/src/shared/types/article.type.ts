@@ -7,18 +7,18 @@ export interface Article {
   title: string
   content: string
   description: string
-  favorite: boolean
-  favoritesCount: number
+  favourites: boolean | undefined
+  favortiesCount: number
   slug: string
-  tags: Tag[]
+  tags: Tag[] | undefined
   createdAt: string
   updatedAt: string
 }
 export interface CreateArticleRequest {
-  title: string
-  description: string
-  content: string
-  tags: string[]
+  title: string | undefined
+  description: string | undefined
+  content: string | undefined
+  tags: Tag[] | undefined
 }
 
 export interface ArticleResponse {
@@ -39,3 +39,4 @@ export interface CreateArticle {
   content: string
   tags: string[]
 }
+export type { Tag }

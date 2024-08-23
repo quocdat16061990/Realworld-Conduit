@@ -7,7 +7,7 @@ const favoriteApi = {
     return axiosInstance.post<Article>(`favorite/${slug}/favorites`)
   },
   unFavoriteArticle(slug: string) {
-    return axios.delete<Article>(`favorite/${slug}/favorites`)
+    return axiosInstance.delete<Article>(`favorite/${slug}/favorites`)
   }
 }
 export default favoriteApi

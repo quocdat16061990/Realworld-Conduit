@@ -4,6 +4,7 @@ const path = {
   signUp: '/sign-up',
   logout: '/logout',
   article: '/article',
+  editArticle: '/article/:slug',
   profile: '/profile',
   editProfile: '/profile/:id',
   details: '/article-detail/:slug',

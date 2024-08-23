@@ -8,6 +8,7 @@ import {
   Req,
   Patch,
   Body,
+  Get,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { UserReq } from 'src/common/decorator/user.decorator';
@@ -62,7 +63,7 @@ export class ProfileController {
     return this.profileService.unFollowUser(username, user);
   }
 
-  @Patch('/:username/update-profile')
+  @Patch('/:email/update-profile')
   @UseInterceptors(SerializeInterceptor)
   @UseGuards(JwtAuthenticationGuard)
   async updateProfile(
@@ -70,5 +71,12 @@ export class ProfileController {
     @Body() updateProfile: UpdateProfileDto,
   ) {
     return this.profileService.updateProfile(email, updateProfile);
+  }
+
+  @Get('/profile')
+  @UseInterceptors(SerializeInterceptor)
+  @UseGuards(JwtAuthenticationGuard)
+  async getProfile(@Req() user: RequestWithUser) {
+    return this.profileService.getProfile(user);
   }
 }

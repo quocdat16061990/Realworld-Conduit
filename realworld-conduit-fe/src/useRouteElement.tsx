@@ -20,6 +20,7 @@ const SignUp = lazy(() => import('./features/Auth/Sign-Up'))
 const Article = lazy(() => import('./features/Article'))
 const ArticleDetail = lazy(() => import('./features/Article/ArticleDetail'))
 const NewArticle = lazy(() => import('./features/Article/New-Article'))
+const EditArticle = lazy(() => import('./features/Article/EditArticle'))
 const Profile = lazy(() => import('./features/Profile'))
 const EditProfile = lazy(() => import('./features/Profile/EditProfile'))
 export default function useRouteElement() {
@@ -62,6 +63,16 @@ export default function useRouteElement() {
             <MainLayout>
               <Suspense>
                 <NewArticle />
+              </Suspense>
+            </MainLayout>
+          )
+        },
+        {
+          path: path.editArticle,
+          element: (
+            <MainLayout>
+              <Suspense>
+                <EditArticle />
               </Suspense>
             </MainLayout>
           )

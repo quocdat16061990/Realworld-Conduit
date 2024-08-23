@@ -27,7 +27,6 @@ export class UpdateProfileDto {
   @ApiProperty({
     description: 'Username',
   })
-  @MaxLength(20)
   @MinLength(4)
   @IsString()
   @IsNotEmpty()
@@ -38,7 +37,6 @@ export class UpdateProfileDto {
   @ApiProperty({
     description: 'Username',
   })
-  @MaxLength(20)
   @MinLength(4)
   @IsString()
   @IsNotEmpty()
@@ -47,7 +45,7 @@ export class UpdateProfileDto {
   email: string | null;
 
   @ApiProperty({
-    description: 'Username',
+    description: 'Email',
   })
   @MaxLength(20)
   @MinLength(4)

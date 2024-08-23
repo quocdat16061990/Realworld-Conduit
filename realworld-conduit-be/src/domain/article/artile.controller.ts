@@ -34,11 +34,25 @@ export class ArticlesController {
   })
   @Post('articles')
   @UseGuards(JwtAuthenticationGuard)
-  async createArticle(
+  async updateArticle(
     @Body() data: CreateArticleDto,
     @Req() req: RequestWithUser,
   ) {
     return this.articleService.createArticle(data, req);
+  }
+
+  @ApiOperationDecorator({
+    type: CreateArticleDto,
+    summary: 'Create Article',
+    description: 'Create Article',
+  })
+  @Patch('articles/:slug')
+  @UseGuards(JwtAuthenticationGuard)
+  async createArticle(
+    @Param('slug') slug: string,
+    @Body() data: CreateArticleDto,
+  ) {
+    return this.articleService.updateArticle(slug, data);
   }
 
   @ApiOperationDecorator({

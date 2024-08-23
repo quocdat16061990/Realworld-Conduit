@@ -33,12 +33,15 @@ export class ProfileService extends BaseService<any, any> {
         followerId: followerUser.id,
       },
     });
+    const followerCount = await this.databaseService.follow.count({
+      where: { followerId: followerUser.id },
+    });
     return {
       username: followerUser.username,
       email: followerUser.email,
       bio: followerUser.shortBio,
       image: followerUser.avatar,
-      following: user?.user?.id,
+      followerCount,
       isFollowed: true,
     };
   }
@@ -46,25 +49,34 @@ export class ProfileService extends BaseService<any, any> {
     const followingUser = await this.databaseService.user.findUnique({
       where: { username: username },
     });
-
-    await this.databaseService.follow.deleteMany({
+    const followRelationship = await this.databaseService.follow.findFirst({
       where: {
         followingId: user?.user?.id,
         followerId: followingUser.id,
       },
+    });
+    console.log('followRelationship: ', followRelationship);
+    await this.databaseService.follow.delete({
+      where: {
+        id: followRelationship.id,
+      },
+    });
+    const followingCount = await this.databaseService.follow.count({
+      where: { followerId: followingUser.id },
     });
     return {
       username: followingUser.username,
       email: followingUser.email,
       bio: followingUser.shortBio,
       image: followingUser.avatar,
+      followingCount,
       isFollowed: false,
     };
   }
   async updateProfile(email: string, data: UpdateProfileDto) {
     const { avatar, username, shortBio, password, ...otherData } = data;
 
-    const userProfile = await this.authService.getByEmail(email);
+    const userProfile = await this.authService.getByEmail(data.email);
     if (!userProfile) {
       throw new NotFoundException('User not found');
     }
@@ -88,5 +100,18 @@ export class ProfileService extends BaseService<any, any> {
       where: { email },
       data: updateData,
     });
+  }
+  async getProfile(req: RequestWithUser) {
+    const { user } = req;
+    const profile = await this.databaseService.user.findFirst({
+      where: {
+        email: user.email,
+      },
+      include: {
+        followers: true,
+        following: true,
+      },
+    });
+    return profile;
   }
 }

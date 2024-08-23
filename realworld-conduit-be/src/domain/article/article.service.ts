@@ -68,36 +68,46 @@ export class ArticleService extends BaseService<any, any> {
     });
   }
 
-  async updateArticle(
-    id: number,
-    data: Partial<Omit<Prisma.ArticleUpdateInput, 'tags'>> & {
-      tags?: string[];
-    },
-  ) {
+  async updateArticle(slug: string, data: CreateArticleDto) {
     const { title, description, content, tags, ...otherData } = data;
-    let updateData: Prisma.ArticleUpdateInput = { ...otherData };
-    if (title !== undefined) {
-      updateData.title = title;
-      updateData.slug = generateSlug(title as string);
-    }
-    if (description !== undefined) {
-      updateData.description = description;
-    }
-    if (content !== undefined) {
-      updateData.content = content;
-    }
-    if (tags && tags.length > 0) {
-      const tagConnectOrCreate = tags.map((tagName) => ({
-        where: { name: tagName },
-        create: { name: tagName },
-      }));
-      updateData.tags = { set: [], connectOrCreate: tagConnectOrCreate };
-    }
-    return await this.databaseService.article.update({
-      where: { id },
-      data: updateData,
-      include: { tags: true },
+
+    // Tìm bài viết bằng slug
+    const article = await this.databaseService.article.findFirst({
+      where: { slug },
+      include: {
+        author: true,
+        comments: true,
+        favourites: true,
+        tags: true,
+      },
     });
+
+    const updatedArticle = await this.databaseService.article.update({
+      where: { slug },
+      data: {
+        title: title ?? article.title,
+        description: description ?? article.description,
+        content: content ?? article.content,
+        ...otherData,
+        tags: tags
+          ? {
+              set: [],
+              connectOrCreate: tags.map((tag) => ({
+                where: { name: tag },
+                create: { name: tag },
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        author: true,
+        comments: true,
+        favourites: true,
+        tags: true,
+      },
+    });
+
+    return updatedArticle;
   }
   async deleteArticle(slug: string, req: RequestWithUser) {
     const article = await this.databaseService.article.findFirst({
