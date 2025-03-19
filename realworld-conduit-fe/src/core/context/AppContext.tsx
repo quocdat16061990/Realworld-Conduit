@@ -1,33 +1,31 @@
-import Cookies from 'js-cookie'
-import { createContext, useState } from 'react'
+import { createContext, useState } from "react";
 
 interface AppContextInterface {
-  isAuthenticated: boolean
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
-  reset: () => void
+  isAuthenticated: boolean;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  reset: () => void;
 }
-
 export const getInitialAppContext: () => AppContextInterface = () => ({
   isAuthenticated: false,
   setIsAuthenticated: () => null,
-  reset: () => null
-})
-const initialAppContext = getInitialAppContext()
-export const AppContext = createContext<AppContextInterface>(initialAppContext)
+  reset: () => null,
+});
+const initialAppContext = getInitialAppContext();
+export const AppContext = createContext<AppContextInterface>(initialAppContext);
 export const AppProvider = ({
   children,
-  defaultValue = initialAppContext
+  defaultValue = initialAppContext,
 }: {
-  children: React.ReactNode
-  defaultValue?: AppContextInterface
+  children: React.ReactNode;
+  defaultValue?: AppContextInterface;
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const savedAuth = localStorage.getItem('isAuthenticated')
-    return savedAuth === 'true' || defaultValue.isAuthenticated
-  })
+    const savedAuth = localStorage.getItem("isAuthenticated");
+    return savedAuth === "true" || defaultValue.isAuthenticated;
+  });
   const reset = () => {
-    setIsAuthenticated(false)
-  }
+    setIsAuthenticated(false);
+  };
 
   return (
     <AppContext.Provider
@@ -35,10 +33,10 @@ export const AppProvider = ({
         isAuthenticated,
         setIsAuthenticated,
 
-        reset
+        reset,
       }}
     >
       {children}
     </AppContext.Provider>
-  )
-}
+  );
+};

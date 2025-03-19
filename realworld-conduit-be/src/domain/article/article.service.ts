@@ -109,7 +109,9 @@ export class ArticleService extends BaseService<any, any> {
 
     return updatedArticle;
   }
+  //concurency request
   async deleteArticle(slug: string, req: RequestWithUser) {
+    //dua vao promise alll
     const article = await this.databaseService.article.findFirst({
       where: { slug },
       include: {
@@ -235,22 +237,20 @@ export class ArticleService extends BaseService<any, any> {
   }
 
   async getAllArticle(query: ArticleQueryParamsDto, req: RequestWithUser) {
-    const { limit, offset, tag, author, favorite } = query;
+    const { limit = 100, offset = 0, tag, author, favorite } = query; 
 
     const where: Prisma.ArticleWhereInput = {};
 
     if (tag) {
       where.tags = {
         some: {
-          name: tag,
+          name: { in: Array.isArray(tag) ? tag : [tag] }, 
         },
       };
     }
 
     if (author) {
-      where.author = {
-        username: author,
-      };
+      where.author = { username: author };
     }
 
     if (favorite) {
@@ -262,22 +262,20 @@ export class ArticleService extends BaseService<any, any> {
         },
       };
     }
-    const [articles, totalCount] = await Promise.all([
-      this.databaseService.article.findMany({
-        where,
-        include: {
-          author: true,
-          tags: true,
-          favourites: true,
-        },
-        skip: offset,
-        take: limit,
-        orderBy: {
-          createdAt: 'asc',
-        },
-      }),
-      this.databaseService.article.count({ where }),
-    ]);
+
+    const totalCount = await this.databaseService.article.count({ where });
+
+    const articles = await this.databaseService.article.findMany({
+      where,
+      include: {
+        author: true,
+        tags: true,
+        favourites: true,
+      },
+      skip: offset, // Bắt đầu từ vị trí offset
+      take: limit, // Lấy số lượng bài viết tối đa theo limit
+      orderBy: { createdAt: 'desc' }, // Sắp xếp theo thời gian tạo (hoặc bất kỳ thứ tự nào bạn cần)
+    });
 
     const enhancedArticles = articles.map((article) => {
       const isFavorited = article.favourites.some((fav) => fav.userId);
@@ -296,11 +294,13 @@ export class ArticleService extends BaseService<any, any> {
         tags: article.tags,
       };
     });
+
     return {
       enhancedArticles,
-      totalCount,
+      totalCount, // Trả về tổng số bài viết để có thể phân trang
     };
   }
+
   async getAllInformation() {
     const getAllArticle = await this.databaseService.article.findMany();
     return getAllArticle;

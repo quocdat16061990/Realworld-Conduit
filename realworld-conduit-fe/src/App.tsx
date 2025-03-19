@@ -1,18 +1,15 @@
-import { useState } from 'react'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-
-import './App.scss'
-import useRouteElement from './useRouteElement'
-
+import "./App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useRouteElement from "@/useRouteElements";
 function App() {
-  const routeElement = useRouteElement()
+  const routeElement = useRouteElement();
   return (
     <div>
       {routeElement}
       <ToastContainer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

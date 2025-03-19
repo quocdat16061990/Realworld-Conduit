@@ -1,17 +1,17 @@
-import Footer from 'src/shared/container/Footer'
-import Header from 'src/shared/container/Header'
-import './AuthLayout.scss'
-import { Outlet } from 'react-router-dom'
+import React from "react";
+import Header from "@/container/Header";
+import Footer from "@/container/Footer";
+import { Outlet } from "react-router-dom";
 interface Props {
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }
 export default function AuthLayout({ children }: Props) {
   return (
-    <div className='authLayout'>
+    <div className="">
       <Header />
       {children}
       <Outlet />
       <Footer />
     </div>
-  )
+  );
 }

@@ -1,19 +1,16 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import path from 'path'
-
+import { defineConfig, resolveConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3000
-  },
-  css: {
-    devSourcemap: true
-  },
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      'src': path.resolve(__dirname, './src')
-    }
-  }
-})
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
+  server: {
+    port: 3000,
+  },
+});

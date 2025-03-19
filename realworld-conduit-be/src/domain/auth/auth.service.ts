@@ -3,15 +3,13 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import bcrypt from 'bcrypt';
 import TokenPayload from './tokenPayload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { strict } from 'assert';
+
 
 @Injectable()
 export class AuthService {
@@ -81,6 +79,7 @@ export class AuthService {
       );
     }
   }
+  //catch global exception -> throw catch
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
     const user = await this.getById(userId);
 
